@@ -116,7 +116,6 @@ export default function Home() {
       <PlanetarySystem 
         planetSize={45}
         planetColor="bg-ocean-500"
-        followDelay={0}
         showRings={true}
         trailEffect={true}
         moons={[

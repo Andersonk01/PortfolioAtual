@@ -89,7 +89,7 @@ export const MousePlanet = ({
             scale: { duration: 0.5 },
             rotate: { 
               duration: 20,
-              repeat: Infinity,
+              repeat: Number.POSITIVE_INFINITY,
               ease: "linear"
             }
           }}
