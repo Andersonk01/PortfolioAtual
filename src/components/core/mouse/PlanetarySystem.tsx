@@ -22,12 +22,12 @@ interface PlanetarySystemProps {
 
 export const PlanetarySystem = ({
   planetSize = 50,
-  planetColor = "bg-ocean-500",
+  planetColor = "bg-[#00B4D8]", // Cor atualizada com azul pastel da paleta
   showRings = true,
   trailEffect = false,
   moons = [
-    { size: 10, distance: 80, color: "bg-ocean-300", orbitDuration: 5, delay: 0 },
-    { size: 15, distance: 110, color: "bg-ocean-100", orbitDuration: 8, delay: 0.5 },
+    { size: 10, distance: 80, color: "bg-[#90E0EF]", orbitDuration: 5, delay: 0 },
+    { size: 15, distance: 110, color: "bg-[#CAF0F8]", orbitDuration: 8, delay: 0.5 },
   ],
 }: PlanetarySystemProps) => {
   // Detectar o tema
@@ -37,8 +37,7 @@ export const PlanetarySystem = ({
   // Propriedades específicas para o modo buraco negro - movidas para o início
   const blackHoleSize = useMemo(() => planetSize * 0.9, [planetSize])
   const accretionDiskSize = useMemo(() => blackHoleSize * 3, [blackHoleSize])
-  const distortionSize = useMemo(() => blackHoleSize * 10, [blackHoleSize]) // Maior área de distorção
-      
+  
   // Use motion values para posicionamento mais suave
   const mouseX = useMotionValue(-100)
   const mouseY = useMotionValue(-100)
@@ -68,12 +67,12 @@ export const PlanetarySystem = ({
     color: string;
   }>>([])
   
-  // Função para gerar cores aleatórias para as partículas
+  // Função para gerar cores aleatórias para as partículas (atualizada para usar a paleta de azuis)
   const getRandomAccretionColor = () => {
     const colors = [
-      'bg-purple-500', 'bg-fuchsia-400', 'bg-violet-300', 
-      'bg-indigo-400', 'bg-blue-300', 'bg-pink-400',
-      'bg-white'
+      'bg-[#CAF0F8]', 'bg-[#90E0EF]', 'bg-[#00B4D8]', 
+      'bg-[#0077B6]', 'bg-[#03045E]', 'bg-white',
+      'bg-[#E8F8FF]' // Azul mais claro adicional
     ]
     return colors[Math.floor(Math.random() * colors.length)]
   }
@@ -81,7 +80,7 @@ export const PlanetarySystem = ({
   // Gerar partículas para o efeito de acreção
   useEffect(() => {
     if (isDarkMode) {
-      const newParticles = Array.from({ length: 40 }).map((_, i) => ({
+      const newParticles = Array.from({ length: 20 }).map((_, i) => ({
         id: i,
         size: 1 + Math.random() * 3,
         distance: (blackHoleSize/2) + Math.random() * accretionDiskSize,
@@ -182,7 +181,7 @@ export const PlanetarySystem = ({
     
     // Adicionar novas partículas à medida que as antigas são consumidas
     const addNewParticles = () => {
-      if (accretionParticles.length < 40) {
+      if (accretionParticles.length < 20) {
         setAccretionParticles(current => [
           ...current,
           {
@@ -210,63 +209,11 @@ export const PlanetarySystem = ({
 
   return (
     <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
-      {/* Filtro SVG para distorção no modo Dark - efeito de lente gravitacional mais forte */}
-      <svg width="0" height="0" className="absolute">
-        <defs>
-          <filter id="black-hole-distortion" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
-            <feDisplacementMap 
-              in="blur" 
-              in2="blur" 
-              scale={isDarkMode ? "70" : "0"} 
-              xChannelSelector="R" 
-              yChannelSelector="G" 
-              result="displacement" 
-            />
-            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="turbulence" />
-            <feDisplacementMap 
-              in="displacement" 
-              in2="turbulence" 
-              scale={isDarkMode ? "30" : "0"} 
-              xChannelSelector="R" 
-              yChannelSelector="B" 
-            />
-          </filter>
-        </defs>
-      </svg>
-
-      {/* Estrelas distorcidas ao redor - apenas em modo dark */}
-      {isDarkMode && (
-        <div className="fixed inset-0 overflow-hidden">
-          {Array.from({ length: 50 }).map((_, i) => (
-            <motion.div
-              key={`star-${i}`}
-              className="absolute bg-white rounded-full"
-              style={{
-                width: 1 + Math.random() * 2,
-                height: 1 + Math.random() * 2,
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                opacity: [0.4, 1, 0.4]
-              }}
-              transition={{
-                duration: 1 + Math.random() * 3,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
-                delay: Math.random() * 2
-              }}
-            />
-          ))}
-        </div>
-      )}
-
       {/* Trail effect - diferentes para planeta e buraco negro */}
       {trailEffect && trail.map((point, index) => (
         <motion.div
           key={point.id}
-          className={`absolute ${isDarkMode ? 'bg-purple-500/5' : 'bg-ocean-500/5'} rounded-full`}
+          className={`absolute ${isDarkMode ? 'bg-[#CAF0F8]/5' : 'bg-[#00B4D8]/5'} rounded-full`}
           style={{
             left: point.x,
             top: point.y,
@@ -294,60 +241,6 @@ export const PlanetarySystem = ({
           translateY: "-50%",
         }}
       >
-        {/* Distorção espacial do buraco negro (modo dark) */}
-        {isDarkMode && (
-          <motion.div
-            className="absolute rounded-full bg-transparent"
-            initial={{ scale: 0 }}
-            animate={{ 
-              scale: [1, 1.1, 1],
-              rotate: 360
-            }}
-            transition={{
-              scale: { 
-                duration: 8, 
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut"
-              },
-              rotate: { 
-                duration: 40, 
-                repeat: Number.POSITIVE_INFINITY, 
-                ease: "linear"
-              }
-            }}
-            style={{
-              width: distortionSize,
-              height: distortionSize,
-              top: -distortionSize/2 + blackHoleSize/2,
-              left: -distortionSize/2 + blackHoleSize/2,
-              filter: "url(#black-hole-distortion)"
-            }}
-          >
-            {/* Elementos espalhados que serão distorcidos */}
-            {Array.from({ length: 30 }).map((_, i) => (
-              <motion.div
-                key={`distortion-${i}`}
-                className="absolute rounded-full bg-white/10"
-                style={{
-                  width: 4 + Math.random() * 8,
-                  height: 4 + Math.random() * 8,
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  opacity: [0.2, 0.8, 0.2],
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 5,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "easeInOut",
-                  delay: Math.random() * 2
-                }}
-              />
-            ))}
-          </motion.div>
-        )}
-
         {/* Partículas de acreção - sendo sugadas para o buraco negro */}
         {isDarkMode && accretionParticles.map(particle => (
           <motion.div
@@ -368,7 +261,7 @@ export const PlanetarySystem = ({
         {/* Planet rings (apenas no modo planet) */}
         {showRings && !isDarkMode && (
           <motion.div
-            className="absolute rounded-full border-2 border-ocean-300/30"
+            className="absolute rounded-full border-2 border-[#90E0EF]/40"
             style={{
               width: planetSize * 2.2,
               height: planetSize * 0.8,
@@ -467,15 +360,15 @@ export const PlanetarySystem = ({
             >
               {/* Planet surface details */}
               <div className="absolute inset-0 rounded-full overflow-hidden opacity-40">
-                <div className="absolute w-1/3 h-1/3 bg-white/20 rounded-full top-1/4 left-1/4" />
-                <div className="absolute w-1/4 h-1/4 bg-white/10 rounded-full top-2/3 right-1/3" />
-                <div className="absolute w-1/5 h-1/5 bg-white/10 rounded-full top-1/5 right-1/5" />
-                <div className="absolute w-2/5 h-1/4 bg-ocean-700/20 rounded-full bottom-1/4 right-1/4" />
+                <div className="absolute w-1/3 h-1/3 bg-[#CAF0F8]/30 rounded-full top-1/4 left-1/4" />
+                <div className="absolute w-1/4 h-1/4 bg-[#CAF0F8]/20 rounded-full top-2/3 right-1/3" />
+                <div className="absolute w-1/5 h-1/5 bg-[#CAF0F8]/20 rounded-full top-1/5 right-1/5" />
+                <div className="absolute w-2/5 h-1/4 bg-[#0077B6]/30 rounded-full bottom-1/4 right-1/4" />
               </div>
               
               {/* Glowing effect */}
               <motion.div 
-                className="absolute -inset-2 rounded-full bg-ocean-500/10 blur-md z-[-1]"
+                className="absolute -inset-2 rounded-full bg-[#00B4D8]/20 blur-md z-[-1]"
                 animate={{ 
                   scale: [1, 1.2, 1],
                   opacity: [0.4, 0.7, 0.4]
@@ -502,7 +395,7 @@ export const PlanetarySystem = ({
             >
               {/* Fotosfera do buraco negro - borda brilhante do horizonte de eventos */}
               <motion.div
-                className="absolute rounded-full bg-gradient-radial from-purple-500/80 via-purple-800/50 to-transparent"
+                className="absolute rounded-full bg-gradient-radial from-[#CAF0F8]/90 via-[#90E0EF]/60 to-transparent"
                 style={{
                   width: blackHoleSize * 1.15,
                   height: blackHoleSize * 1.15,
@@ -522,17 +415,17 @@ export const PlanetarySystem = ({
             
               {/* Centro do buraco negro - horizonte de eventos */}
               <motion.div
-                className="rounded-full bg-black shadow-lg relative z-20"
+                className="rounded-full bg-white/90 shadow-lg relative z-20"
                 style={{
                   width: blackHoleSize,
                   height: blackHoleSize,
-                  boxShadow: "0 0 30px 5px rgba(0, 0, 0, 0.9)"
+                  boxShadow: "0 0 30px 5px rgba(202, 240, 248, 0.5)"
                 }}
                 animate={{
                   boxShadow: [
-                    "0 0 30px 5px rgba(0, 0, 0, 0.9)",
-                    "0 0 40px 8px rgba(0, 0, 0, 0.9)",
-                    "0 0 30px 5px rgba(0, 0, 0, 0.9)"
+                    "0 0 30px 5px rgba(202, 240, 248, 0.5)",
+                    "0 0 40px 8px rgba(202, 240, 248, 0.6)",
+                    "0 0 30px 5px rgba(202, 240, 248, 0.5)"
                   ]
                 }}
                 transition={{
@@ -545,7 +438,7 @@ export const PlanetarySystem = ({
               >
                 {/* Borda do horizonte de eventos */}
                 <motion.div
-                  className="absolute inset-0 rounded-full border border-purple-500/30"
+                  className="absolute inset-0 rounded-full border-2 border-[#00B4D8]/70"
                   animate={{
                     opacity: [0.3, 0.8, 0.3]
                   }}
@@ -561,7 +454,7 @@ export const PlanetarySystem = ({
               
               {/* Brilho gravitacional */}
               <motion.div
-                className="absolute -inset-4 rounded-full bg-gradient-to-r from-purple-900/30 via-fuchsia-500/10 to-black/0 blur-xl z-10"
+                className="absolute -inset-4 rounded-full bg-gradient-to-r from-[#0077B6]/30 via-[#90E0EF]/20 to-transparent blur-xl z-10"
                 animate={{
                   scale: [1, 1.2, 1],
                   opacity: [0.3, 0.5, 0.3]
@@ -585,4 +478,4 @@ export const PlanetarySystem = ({
       </motion.div>
     </div>
   )
-} 
+}
