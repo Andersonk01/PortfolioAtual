@@ -66,7 +66,7 @@ export const HeaderMain: React.FC = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-ocean-500 to-ocean-300 rounded-full blur-sm animate-pulse"></div>
               <Image
                 width={40}
-                height={38}
+                height={40}
                 src="/logo.png"
                 className="relative bg-contain rounded-full border-2 border-ocean-500/50"
                 alt="Logo"

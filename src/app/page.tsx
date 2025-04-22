@@ -3,6 +3,7 @@
 import { Wrapper } from "@/components/Wrapper"
 import { SocialLinks } from "@/components/SocialLinks"
 import { DownloadCV } from "@/components/DownloadCV"
+import { PlanetarySystem } from "@/components/core/mouse/PlanetarySystem"
 import Image from "next/image"
 // import Cat from "../public/assets/cat.gif"
 import { ButtonAnimated } from "@/components/ButtonAnimated"
@@ -111,6 +112,20 @@ export default function Home() {
 
   return (
     <div className="relative">
+      {/* Add the PlanetarySystem component with custom properties */}
+      <PlanetarySystem 
+        planetSize={45}
+        planetColor="bg-ocean-500"
+        followDelay={0}
+        showRings={true}
+        trailEffect={true}
+        moons={[
+          { size: 8, distance: 70, color: "bg-ocean-300", orbitDuration: 4, delay: 0 },
+          { size: 12, distance: 100, color: "bg-ocean-100", orbitDuration: 7, delay: 0.2 },
+          { size: 6, distance: 130, color: "bg-white", orbitDuration: 10, delay: 0.3 },
+        ]}
+      />
+      
       {/* Particle canvas */}
       <canvas id="particles" className="fixed inset-0 z-0 pointer-events-none" />
 
